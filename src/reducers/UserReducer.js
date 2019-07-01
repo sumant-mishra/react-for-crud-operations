@@ -31,7 +31,7 @@ export default function UserReducer(state = initialState, action)
         case actions.USER_ADDED:
             let newUserData = action.payload;
             
-            newUserData.id = getRandomUserId();
+            //newUserData.id = getRandomUserId();
             users.push(newUserData);
             return {...state, users: [].concat(users)};
             

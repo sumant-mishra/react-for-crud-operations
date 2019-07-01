@@ -47,16 +47,16 @@ class UserForm extends Component{
                 firstName: "",
                 lastName: "",
                 email: "",
-                jobTitle: "",
-                country: "",
-                phone: ""
+                department: "",
+                salary: ""
             }
         }
     }
 
     generateNewUserData(){
-        
-        this.props.editUser(generateRawUserData());
+        let newState = generateRawUserData();
+        console.log(newState);
+        this.props.editUser(newState);
     }
 
     inputOnChange(e){
@@ -72,9 +72,8 @@ class UserForm extends Component{
                                 firstName: "",
                                 lastName: "",
                                 email: "",
-                                jobTitle: "",
-                                country: "",
-                                phone: ""
+                                department: "",
+                                salary: ""
                             })
     }
 
@@ -85,7 +84,12 @@ class UserForm extends Component{
     }
 
     saveEditedUserData(){
-        this.props.saveEditedUserData(this.props.user);
+        let objPostData = this.props.user;
+        console.log(objPostData);
+        let monthIndex = new Date(objPostData.hire_date).getMonth();
+        objPostData.hire_date = new Date(objPostData.hire_date).getFullYear() + "-" + ((monthIndex < 10) ? "0"+ (monthIndex+1) : monthIndex) + "-" + new Date(objPostData.hire_date).getUTCDate();        //objPostData.hire_date = 
+        console.log("objPostData: ", objPostData);
+        this.props.saveEditedUserData(objPostData);
         this.resetSelectedUserData();
         this.props.history.push('/');
     }
@@ -109,8 +113,12 @@ class UserForm extends Component{
                     <input onChange={this.inputOnChange.bind(this)} style={inputTextStyle} type="text" name="email"  value={user.email}></input>
                 </div><br/>
                 <div>
+                    <label>Salary:</label><br/>
+                    <input onChange={this.inputOnChange.bind(this)} style={inputTextStyle} type="text" name="salary"  value={user.salary}></input>
+                </div><br/>
+                <div>
                 
-                <button type="button" className="btn btn-link" style={button} onClick={this.generateNewUserData.bind(this)} name="submitBtn">Generate User Data</button>
+                    <button type="button" className="btn btn-link" style={button} onClick={this.generateNewUserData.bind(this)} name="submitBtn">Generate User Data</button>
                     {
                         (user.id == "") ?
                         <button type="button" className="btn btn-primary" style={button} name="addUserBtn" onClick={this.addUser.bind(this)}>Save</button> :

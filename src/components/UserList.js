@@ -46,6 +46,7 @@ class UserList extends Component{
     }
 
     onEditClick(item){
+        console.log("Item: ", item);
         this.props.editUser(item);
         this.props.history.push('/user');
         //this.props.fetchUsersList();

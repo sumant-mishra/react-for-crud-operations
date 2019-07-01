@@ -7,17 +7,64 @@ export const USER_DELETED = 'USER_DELETED';
 export const USER_EDIT_SUCCESS = 'USER_EDIT_SUCCESS';
 export const USER_SELECTED = 'USER_SELECTED';
 
+const MODE = 'ONLINE';
+//const BASE_URL = 'http://localhost:3100'
+const BASE_URL = 'http://localhost:8080'
+
 export const addUser = (userData) => {
-    return {
-        type: USER_ADDED,
-        payload: userData
+    
+    if(MODE == "ONLINE")
+    {
+
+        return (dispatch) => {
+            delete userData.id;
+            axios.post(BASE_URL + '/employees', userData)
+                .then(function (response) {
+                    dispatch( {
+                        type: USER_ADDED,
+                        payload: response.data
+                    })
+                })
+                .catch(function (error) {
+                    console.log("error: ", error);
+                }
+            );
+        }
+    }
+    else
+    {
+        return {
+            type: USER_ADDED,
+            payload: userData
+        }
     }
 }
 
 export const deleteUser = (userData) => {
-    return {
-        type: USER_DELETED,
-        payload: userData
+    if(MODE == "ONLINE")
+    {
+        return (dispatch) => {
+            axios.delete(BASE_URL + '/employees/' + userData.id)
+                .then(function (response) {
+                    
+                    dispatch( {
+                        type: USER_DELETED,
+                        payload: userData
+                    })
+
+                })
+                .catch(function (error) {
+                    console.log("error: ", error);
+                }
+            );
+        }
+    }
+    else
+    {
+        return {
+            type: USER_DELETED,
+            payload: userData
+        }
     }
 }
 
@@ -31,33 +78,60 @@ export const editUser = (userData) => {
 }
 
 export const saveEditedUserData = (userData) => {
-    return {
-        type: USER_EDIT_SUCCESS,
-        payload: userData
+    if(MODE == "ONLINE")
+    {
+        return (dispatch) => {
+            
+            axios.put(BASE_URL + '/employees/' + userData.id, userData)
+                .then(function (response) {
+                    
+                    dispatch( {
+                        type: USER_EDIT_SUCCESS,
+                        payload: userData
+                    })
+                })
+                .catch(function (error) {
+                    console.log("error: ", error);
+                }
+            )
+        };
+    }
+    else
+    {
+        return {
+            type: USER_EDIT_SUCCESS,
+            payload: userData
+        }
     }
 }
 
 export const fetchUsersList = () => {
-    console.log("calling fetch fetchUsersList")
-    /* return (dispatch) => {
-        console.log("dispatch: ", dispatch);
-        axios.get('https://s3.amazonaws.com/jquerytestcsscorp/movies-in-theaters.json')
-        .then(function (response) {
-            console.log(response);
-            dispatch( {
-                type: MOVIES_DATA_FETCHED,
-                payload: response.data
+    
+    if(MODE == "ONLINE")
+    {
+        return (dispatch) => {
+            
+            axios.get(BASE_URL + '/employees')
+            .then(function (response) {
+                
+                dispatch( {
+                    type: USER_LIST_FETCHED,
+                    payload: response.data
+                })
             })
-        })
-        .catch(function (error) {
-            console.log("error: ", error);
-        });
-
-    } */
-    return {
-        type: USER_LIST_FETCHED,
-        payload: generateListOfUsers()
+            .catch(function (error) {
+                console.log("error: ", error);
+            });
+        } 
     }
+    else
+    {
+        return {
+            type: USER_LIST_FETCHED,
+            payload: generateListOfUsers()
+        }
+    }    
+    
 }
 
 
